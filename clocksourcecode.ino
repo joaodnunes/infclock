@@ -133,8 +133,6 @@ pinMode( clockSet,INPUT);
 }
  
 void loop() {
-
-  
   if (kontrol==1)
   {
     pixels.setPixelColor(5*ysaat, pixels.Color(25,25,255));
@@ -165,7 +163,6 @@ if (digitalRead(down)==HIGH)
   yenisaat();
   if(digitalRead(clockSet)==HIGH)
   { 
-    Serial.println("clokcSet tá HIGH");
   while(digitalRead(clockSet)==HIGH)
   { pixels.setPixelColor(kontrol, pixels.Color(255,255,255));
    pixels.show();
@@ -189,14 +186,12 @@ if (digitalRead(down)==HIGH)
    
   if (digitalRead(up)==HIGH)
 {
-  Serial.println("up tá HIGH");
   ydak++;
   while(digitalRead(up)==HIGH);
   if(ydak==60){ysaat=0;}
 }
 if (digitalRead(down)==HIGH)
 {
-  Serial.println("down tá HIGH");
   ydak--;
   while(digitalRead(down)==HIGH);
   if(ydak==255){ydak=59;}
