@@ -3,7 +3,7 @@
 #include <DS1302.h>
 
 #ifdef __AVR__
-  #include <avr/power.h>
+#include <avr/power.h>
 #endif
 
 #define PIN            8
@@ -13,11 +13,11 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 namespace {
 
 
-byte ysaat;
-byte ydak;
-byte saat;
-byte dak;
-byte sn;
+byte yhor;
+byte ymin;
+byte hor;
+byte min;
+byte sec;
 byte kontrol=0;
  const int kCePin   = 5;  // Chip Enable
 const int kIoPin   = 6;  // Input/Output
@@ -31,24 +31,21 @@ DS1302 rtc(kCePin, kIoPin, kSclkPin);
 void printTime() {
   // Get the current time and date from the chip.
   Time t = rtc.time();
-  saat=t.hr;
-  dak=t.min;
-  sn=t.sec;
-  if(saat>=12){saat=saat-12;}
-  pixels.setPixelColor(5*saat, pixels.Color(25,25,255));
-  pixels.setPixelColor(dak, pixels.Color(0,200,10));
-  pixels.setPixelColor(sn, pixels.Color(255,0,0));
+  hor=t.hr;
+  min=t.min;
+  sec=t.sec;
+  if(hor>=12){hor=hor-12;}
+  pixels.setPixelColor(5*hor, pixels.Color(25,25,255));
+  pixels.setPixelColor(min, pixels.Color(0,200,10));
+  pixels.setPixelColor(sec, pixels.Color(255,0,0));
   
   pixels.show();
-  //Serial.println(t.sec);
-  //pixels.setPixelColor(t.hr, pixels.Color(0,0,0));
-  //pixels.setPixelColor(t.sec-1, pixels.Color(0,0,0));
-  
+
   pixels.show();
-  if(sn==0)
+  if(sec==0)
    { 
-    pixels.setPixelColor(dak-1, pixels.Color(0,0,0));
-    pixels.setPixelColor(dak, pixels.Color(0,200,10));
+    pixels.setPixelColor(min-1, pixels.Color(0,0,0));
+    pixels.setPixelColor(min, pixels.Color(0,200,10));
      pixels.show();
     for(int i=1;i<60;i++)
       {
@@ -56,7 +53,7 @@ void printTime() {
       }
     }
 
-   if(dak==0)
+   if(min==0)
   { 
     pixels.setPixelColor(59, pixels.Color(0,0,0));
     }
@@ -68,7 +65,7 @@ void animasyon()
   colorWipe(strip.Color(255, 0, 0), 25); // Red
   colorWipe(strip.Color(0, 255, 0), 25); // Green
   colorWipe(strip.Color(0, 0, 255), 25);
-    theaterChase(strip.Color(127, 127, 127), 50); // White
+  theaterChase(strip.Color(127, 127, 127), 50); // White
   theaterChase(strip.Color(127, 0, 0), 50); // Red
   theaterChase(strip.Color(0, 0, 127), 50);
   for(int i=1;i<60;i++)
@@ -102,12 +99,12 @@ void animasyon()
 }
 
 
-  void yenisaat()
+  void Setti()
   {
  //kontrol=0;
-    saat=ysaat;
-    dak=ydak;
-     Time t(2018, 2, 23,ysaat, ydak, 0, Time::kFriday);
+    hor=yhor;
+    min=ymin;
+     Time t(2018, 2, 23,yhor, ymin, 0, Time::kFriday);
     rtc.time(t);
     
     }
@@ -135,32 +132,32 @@ pinMode( clockSet,INPUT);
 void loop() {
   if (kontrol==1)
   {
-    pixels.setPixelColor(5*ysaat, pixels.Color(25,25,255));
+    pixels.setPixelColor(5*yhor, pixels.Color(25,25,255));
     pixels.show();
   delay(100);
-  pixels.setPixelColor(5*ysaat, pixels.Color(0,0,0));
+  pixels.setPixelColor(5*yhor, pixels.Color(0,0,0));
   pixels.show();
   delay(100);
 if (digitalRead(up)==HIGH)
 {
-  ysaat++;
+  yhor++;
   while(digitalRead(up)==HIGH);
-  if(ysaat==12){ysaat=0;}
+  if(yhor==12){yhor=0;}
 }
 if (digitalRead(down)==HIGH)
 {
-  ysaat--;
+  yhor--;
   while(digitalRead(down)==HIGH);
-  if(ysaat==255){ysaat=11;}
+  if(yhor==255){yhor=11;}
 }
  
-  pixels.setPixelColor(5*ysaat, pixels.Color(25,25,255));
+  pixels.setPixelColor(5*yhor, pixels.Color(25,25,255));
   pixels.show();
   delay(100);
-  pixels.setPixelColor(5*ysaat, pixels.Color(0,0,0));
+  pixels.setPixelColor(5*yhor, pixels.Color(0,0,0));
   pixels.show();
   delay(100);
-  yenisaat();
+  Setti();
   if(digitalRead(clockSet)==HIGH)
   { 
   while(digitalRead(clockSet)==HIGH)
@@ -170,7 +167,7 @@ if (digitalRead(down)==HIGH)
    pixels.setPixelColor(kontrol, pixels.Color(0,0,0));
    pixels.show();
    kontrol++;
-   ysaat=saat;ydak=dak;}
+   yhor=hor;ymin=min;}
   
     }
  if (kontrol==2)
@@ -181,33 +178,33 @@ if (digitalRead(down)==HIGH)
   while(digitalRead(clockSet)==HIGH)
   {    }
    
-   ysaat=saat;ydak=dak;
+   yhor=hor;ymin=min;
    }
    
   if (digitalRead(up)==HIGH)
 {
-  ydak++;
+  ymin++;
   while(digitalRead(up)==HIGH);
-  if(ydak==60){ysaat=0;}
+  if(ymin==60){yhor=0;}
 }
 if (digitalRead(down)==HIGH)
 {
-  ydak--;
+  ymin--;
   while(digitalRead(down)==HIGH);
-  if(ydak==255){ydak=59;}
+  if(ymin==255){ymin=59;}
 } 
-  pixels.setPixelColor(ydak, pixels.Color(0,205,10));
+  pixels.setPixelColor(ymin, pixels.Color(0,205,10));
   pixels.show();
-  yenisaat();
+  Setti();
   delay(100);
-  pixels.setPixelColor(ydak, pixels.Color(0,0,0));
+  pixels.setPixelColor(ymin, pixels.Color(0,0,0));
      pixels.show();
      delay(100); 
     }
   if (kontrol==3)
   {
     kontrol=0;
-     yenisaat();
+     Setti();
   }
   while (kontrol==0)
   {
@@ -219,7 +216,7 @@ if (digitalRead(down)==HIGH)
   { 
     kontrol++;
   while(digitalRead(clockSet)==HIGH);
-  ysaat=saat;ydak=dak;}
+  yhor=hor;ymin=min;}
   printTime();
   }
 }
